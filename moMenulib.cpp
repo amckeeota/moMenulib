@@ -11,8 +11,8 @@ char* moMenu::getText(){
 }
 
 void moMenu::setTop(menuItem *menuTop){
-	top = menuTop;
-	cursorLoc = menuTop;
+	top = &menuTop[0];
+	cursorLoc = &menuTop[0];
 }
 
 void moMenu::setNext(menuItem *cur,menuItem *join){
@@ -20,21 +20,23 @@ void moMenu::setNext(menuItem *cur,menuItem *join){
 }
 
 void moMenu::setPrev(menuItem *cur,menuItem *previous){
-	int len = 0;
-	while (cur[len].next==NULL){
-		cur[len].prev = previous;
+	int len = 1;
+	while(cur[len].text[0]!='\0'){
+		cur[len].prev=previous;
 		len++;
 	}
 }
 
-bool moMenu::moveLeft(char *lTop,char *lBot){
+int moMenu::moveLeft(char *lTop,char *lBot){
 	if(cursorLoc->prev!=NULL){
+		Serial.println(cursorLoc->prev->text);
 		cursorLoc = cursorLoc->prev;
-		if((cursorLoc+1)==NULL){
+		if(cursorLoc[1].text[0]=='\0'){
 			for(int i=0;i<16;i++)
 				lBot[i] = cursorLoc->text[i];
 			for(int i=0;i<16;i++)
 				lTop[i] = (cursorLoc-1)->text[i];
+			return 2;
 		}
 		else{
 			for(int i=0;i<16;i++)
@@ -42,75 +44,58 @@ bool moMenu::moveLeft(char *lTop,char *lBot){
 			for(int i=0;i<16;i++)
 				lBot[i] = (cursorLoc+1)->text[i];
 		}	
-		return true;
+		return 1;
 	}
-	return false;
+	return 0;
 }
-bool moMenu::moveRight(char *lTop,char *lBot){
+int moMenu::moveRight(char *lTop,char *lBot){
 	if(cursorLoc->next!=NULL){
+		Serial.println(cursorLoc->next->text);
 		cursorLoc=cursorLoc->next;
-		if((cursorLoc+1)==NULL){
-			for(int i=0;i<16;i++)
-				lBot[i] = cursorLoc->text[i];
-			for(int i=0;i<16;i++)
-				lTop[i] = (cursorLoc-1)->text[i];
-		}
-		else{
-			for(int i=0;i<16;i++)
-				lTop[i] = cursorLoc->text[i];
-			for(int i=0;i<16;i++)
-				lBot[i] = (cursorLoc+1)->text[i];
-		}	
-		return true;
+		//if the next cursor has only 
+		
+		for(int i=0;i<16;i++)
+			lTop[i] = cursorLoc->text[i];
+		for(int i=0;i<16;i++)
+			lBot[i] = (cursorLoc+1)->text[i];
+		return 1;
 	}
-	return false;
+	return 0;
 }
-bool moMenu::moveUp(char *lTop,char *lBot){
-	if((cursorLoc)->text!=NULL){
+int moMenu::moveUp(char *lTop,char *lBot){
+	if((cursorLoc-1)->text[0]!='\0'){
+		Serial.println((cursorLoc-1)->text);
 		cursorLoc--;
-		if((cursorLoc+1)==NULL){
-			for(int i=0;i<16;i++)
-				lBot[i] = cursorLoc->text[i];
-			for(int i=0;i<16;i++)
-				lTop[i] = (cursorLoc-1)->text[i];
-		}
-		else{
-			for(int i=0;i<16;i++)
-				lTop[i] = cursorLoc->text[i];
-			for(int i=0;i<16;i++)
-				lBot[i] = (cursorLoc+1)->text[i];
-		}	
-		return true;
+		for(int i=0;i<16;i++)
+			lTop[i] = cursorLoc->text[i];
+		for(int i=0;i<16;i++)
+			lBot[i] = (cursorLoc+1)->text[i];
+		return 1;
 	}
-	return false;
+	return 0;
 }
-bool moMenu::moveDown(char *lTop,char *lBot){
-	if((cursorLoc+1)!=NULL){
+int moMenu::moveDown(char *lTop,char *lBot){
+	//If there is one more menuItem below cursorLoc
+	//then move pointer to next item
+	if(cursorLoc[1].text[0]!='\0'){
+		Serial.println(cursorLoc[1].text);
 		cursorLoc++;
-		if((cursorLoc+1)==NULL){
+		//If, after moving, there is nothing below,
+		//keep 
+		if(cursorLoc[1].text[0]=='\0'){
 			for(int i=0;i<16;i++)
 				lBot[i] = cursorLoc->text[i];
 			for(int i=0;i<16;i++)
 				lTop[i] = (cursorLoc-1)->text[i];
+			return 2;
 		}
 		else{
 			for(int i=0;i<16;i++)
 				lTop[i] = cursorLoc->text[i];
 			for(int i=0;i<16;i++)
 				lBot[i] = (cursorLoc+1)->text[i];
+			return 1;
 		}	
-		return true;
 	}
-	return false;
-}
-
-void moMenu::setLines(char* lT,char *lB){
-	if((cursorLoc+1)==NULL){
-		lB = cursorLoc->text;
-		lT = (cursorLoc-1)->text;
-	}
-	else{
-		lT = cursorLoc->text;
-		lB = (cursorLoc+1)->text;
-	}	
+	return 0;
 }

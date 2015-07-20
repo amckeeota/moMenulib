@@ -14,12 +14,11 @@ class moMenu{
 		void setNext(menuItem *cur,menuItem *join);
 		void setPrev(menuItem *cur,menuItem *previous);
 
-		bool moveLeft(char *lTop,char *lBot);
-		bool moveRight(char *lTop,char *lBot);
-		bool moveUp(char *lTop,char *lBot);
-		bool moveDown(char *lTop,char *lBot);
+		int moveLeft(char *lTop,char *lBot);
+		int moveRight(char *lTop,char *lBot);
+		int moveUp(char *lTop,char *lBot);
+		int moveDown(char *lTop,char *lBot);
 	private:
-		void setLines(char* lT,char* lB);
 		menuItem *top;
 		menuItem *cursorLoc;
 		
