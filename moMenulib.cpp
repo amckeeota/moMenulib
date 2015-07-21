@@ -99,3 +99,25 @@ int moMenu::moveDown(char *lTop,char *lBot){
 	}
 	return 0;
 }
+
+void moMenu::moveCursor(int up,int down,int left,int right,moLCD *thisDisplay){
+	char lcdTop[16]="",lcdBot[16]="";
+	int changed = 0;
+	if(digitalRead(up)){
+		changed = moveUp(lcdTop,lcdBot);
+	  }
+	  else if(digitalRead(down)){
+		changed = moveDown(lcdTop,lcdBot);
+	  }
+	  else if(digitalRead(left)){
+		changed = moveLeft(lcdTop,lcdBot);
+	  }
+	  else if(digitalRead(right)){
+		changed = moveRight(lcdTop,lcdBot);
+	  }
+	  
+	  if(changed){
+		thisDisplay->refresh(lcdTop,lcdBot,changed);
+	  }
+
+}

@@ -1,6 +1,8 @@
 #ifndef moMenulib_h
 #define moMenulib_h
 
+class moLCD;
+
 struct menuItem{
 	char text[16];
 	menuItem *next,*prev;
@@ -18,6 +20,8 @@ class moMenu{
 		int moveRight(char *lTop,char *lBot);
 		int moveUp(char *lTop,char *lBot);
 		int moveDown(char *lTop,char *lBot);
+		
+		void moveCursor(int up,int down,int left, int right,moLCD *thisDisplay);
 	private:
 		menuItem *top;
 		menuItem *cursorLoc;
